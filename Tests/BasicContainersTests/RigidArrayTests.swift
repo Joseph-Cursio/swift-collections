@@ -676,6 +676,16 @@ class RigidArrayTests: CollectionTestCase {
     }
   }
 
+  func test_setCapacity_toZero_doesNotLeak() {
+    expectNoHeapGrowth(tolerance: 64 * 1024) {
+      for _ in 0 ..< 10_000 {
+        var array = RigidArray<Int>(capacity: 10)
+        array.setCapacity(0)
+        _ = consume array
+      }
+    }
+  }
+
   func test_setCapacity() {
     withSomeArrayLayouts("layout", ofCapacities: [0, 10, 100]) { layout in
       withEvery(
